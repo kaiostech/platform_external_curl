@@ -134,6 +134,7 @@
 #define OpenSSL_add_all_algorithms()
 /* BoringSSL does not have CONF_modules_load_file */
 #define CONF_modules_load_file(a,b,c)
+#define CONF_modules_free()
 #endif
 
 #ifdef OPENSSL_IS_BORINGSSL
@@ -2065,6 +2066,10 @@ static CURLcode ossl_connect_step1(struct connectdata *conn, int sockindex)
   if(data->set.ssl.verifystatus)
     SSL_set_tlsext_status_type(connssl->handle, TLSEXT_STATUSTYPE_ocsp);
 #endif
+#ifdef OPENSSL_IS_BORINGSSL
+  if(data->set.ssl.verifystatus)
+    SSL_enable_ocsp_stapling(connssl->handle);
+#endif /* OPENSSL_IS_BORINGSSL */
 
   SSL_set_connect_state(connssl->handle);
 
@@ -3183,6 +3188,9 @@ void Curl_ossl_md5sum(unsigned char *tmp, /* input */
 
 bool Curl_ossl_cert_status_request(void)
 {
+#ifdef OPENSSL_IS_BORINGSSL
+  return TRUE;
+#endif
 #if (OPENSSL_VERSION_NUMBER >= 0x0090808fL) && !defined(OPENSSL_NO_TLSEXT) && \
     !defined(OPENSSL_IS_BORINGSSL)
   return TRUE;
