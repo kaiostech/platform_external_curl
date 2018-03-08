@@ -771,8 +771,7 @@
 /* if you have the zlib.h header file */
 #define HAVE_ZLIB_H 1
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Define to 1 if you need the lber.h header file even with ldap.h */
@@ -871,11 +870,17 @@
 /* Define to the function return type for send. */
 #define SEND_TYPE_RETV int
 
+/* The size of `long', as computed by sizeof. */
+#define SIZEOF_LONG 4
+
 /* The size of `long long', as computed by sizeof. */
 /* #undef SIZEOF_LONG_LONG */
 
 /* The size of `off_t', as computed by sizeof. */
 #define SIZEOF_OFF_T 8
+
+/* The size of `void*', as computed by sizeof. */
+#define SIZEOF_VOIDP 4
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -887,7 +892,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Define to enable c-ares support */
-/* #undef USE_ARES */
+#define USE_ARES 1
 
 /* if axTLS is enabled */
 /* #undef USE_AXTLS */
