@@ -20,7 +20,13 @@ curl_includes := \
 	$(LOCAL_PATH)/include/ \
 	$(LOCAL_PATH)/lib \
 	external/boringssl/include \
+	external/c-ares \
 	external/zlib/src
+
+define mk-ca-bundle
+  $(shell cd $(ANDROID_BUILD_TOP)/gecko/security/nss/lib/ckfw/builtins; \
+          perl $(ANDROID_BUILD_TOP)/$(LOCAL_PATH)/lib/mk-ca-bundle.pl -n -f $(ANDROID_PRODUCT_OUT)/system/etc/ca-bundle.crt)
+endef
 
 #########################
 # Build the libcurl static library
@@ -49,7 +55,10 @@ LOCAL_CFLAGS := $(curl_CFLAGS)
 
 LOCAL_MODULE:= libcurl
 LOCAL_MODULE_TAGS := optional
-LOCAL_SHARED_LIBRARIES := libcrypto libssl libz
+LOCAL_SHARED_LIBRARIES := libcrypto libssl libz libcares
+
+$(info generating a fresh ca-bundle.crt from certdata.txt to /system/etc/ca-bundle.crt)
+$(call mk-ca-bundle)
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -63,7 +72,7 @@ LOCAL_SRC_FILES := $(addprefix src/,$(CURL_CFILES))
 LOCAL_MODULE := curl
 LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_LIBRARIES := libcurl
-LOCAL_SHARED_LIBRARIES := libcrypto libssl libz
+LOCAL_SHARED_LIBRARIES := libcrypto libssl libz libcares
 
 
 LOCAL_C_INCLUDES := $(curl_includes)
