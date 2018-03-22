@@ -30,7 +30,7 @@ CFLAGS=(
 ./buildconf
 CFLAGS="${CFLAGS[@]}"
 ./configure --host=arm-linux-androideabi --with-ssl="${T}/external/boringssl" \
-  CFLAGS="${CFLAGS}"  LIBS="-lc" CPPFLAGS="${CFLAGS} -I${T}/external/zlib/src" \
+  CFLAGS="${CFLAGS}"  LIBS="-lc" CPPFLAGS="${CFLAGS} -I${T}/external/zlib/src -I${T}/external/c-ares" \
   LDFLAGS="-L${ANDROID_PRODUCT_OUT}/obj/lib/" --disable-ntlm-wb --enable-ipv6 \
-  --with-zlib
+  --with-zlib --enable-ares="${T}/external/c-ares"
 
