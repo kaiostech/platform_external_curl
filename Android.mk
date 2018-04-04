@@ -23,11 +23,6 @@ curl_includes := \
 	external/c-ares \
 	external/zlib/src
 
-define mk-ca-bundle
-  $(shell cd $(ANDROID_BUILD_TOP)/gecko/security/nss/lib/ckfw/builtins; \
-          perl $(ANDROID_BUILD_TOP)/$(LOCAL_PATH)/lib/mk-ca-bundle.pl -n -f $(ANDROID_PRODUCT_OUT)/system/etc/ca-bundle.crt)
-endef
-
 #########################
 # Build the libcurl static library
 
@@ -57,8 +52,7 @@ LOCAL_MODULE:= libcurl
 LOCAL_MODULE_TAGS := optional
 LOCAL_SHARED_LIBRARIES := libcrypto libssl libz libcares
 
-$(info generating a fresh ca-bundle.crt from certdata.txt to /system/etc/ca-bundle.crt)
-$(call mk-ca-bundle)
+LOCAL_REQUIRED_MODULES := ca-bundle.crt
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -82,3 +76,21 @@ LOCAL_C_INCLUDES := $(curl_includes)
 LOCAL_CFLAGS := $(curl_CFLAGS)
 
 include $(BUILD_EXECUTABLE)
+
+##################################
+# Build the ca-bundle.crt for libcurl
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := ca-bundle.crt
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_PATH := $(TARGET_OUT)/etc
+include $(BUILD_PREBUILT)
+
+MK_CA_BUNDLE := $(ANDROID_BUILD_TOP)/$(LOCAL_PATH)/lib/mk-ca-bundle.pl
+CERTDATA_FILE := file://$(ANDROID_BUILD_TOP)/gecko/security/nss/lib/ckfw/builtins/certdata.txt
+
+$(LOCAL_BUILT_MODULE):
+	@mkdir -p $(@D)
+	@perl $(MK_CA_BUNDLE) -d $(CERTDATA_FILE) -n -f $(ANDROID_BUILD_TOP)/$@
