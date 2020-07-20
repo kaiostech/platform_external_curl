@@ -82,6 +82,7 @@ include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
 
+-include prebuilt-b2g/Android.mk
 LOCAL_MODULE := ca-bundle.crt
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
@@ -93,4 +94,8 @@ CERTDATA_FILE := file://$(ANDROID_BUILD_TOP)/gecko/security/nss/lib/ckfw/builtin
 
 $(LOCAL_BUILT_MODULE):
 	@mkdir -p $(@D)
+ifneq ($(PREBUILT_CA_BUNDLE),)
+	@cp $(PREBUILT_CA_BUNDLE) -f $@
+else
 	@perl $(MK_CA_BUNDLE) -d $(CERTDATA_FILE) -n -f $(ANDROID_BUILD_TOP)/$@
+endif
