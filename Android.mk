@@ -97,5 +97,5 @@ $(LOCAL_BUILT_MODULE):
 ifneq ($(PREBUILT_CA_BUNDLE),)
 	@cp $(PREBUILT_CA_BUNDLE) -f $@
 else
-	@perl $(MK_CA_BUNDLE) -d $(CERTDATA_FILE) -n -f $(ANDROID_BUILD_TOP)/$@
+	@perl $(MK_CA_BUNDLE) -d $(CERTDATA_FILE) -f $(ANDROID_BUILD_TOP)/$@
 endif
